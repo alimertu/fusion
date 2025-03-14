@@ -1,0 +1,443 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+  <meta charset="UTF-8">
+  <title>Fusion - Bilan Carbone Déchets & Énergie</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <link rel="stylesheet" href="style.css">
+
+
+  <!-- Bibliothèques Chart.js et SheetJS -->
+  <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+  <script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js"></script>
+
+  
+</head>
+<body>
+  <!-- Barre d'onglets -->
+  <div class="tabs">
+    <button class="tab-button tab-dechets" onclick="openTab(event, 'tab-dechets')">Déchets</button>
+    <button class="tab-button tab-energie " onclick="openTab(event, 'tab-energie')">Énergie</button>
+    <button class="tab-button tab-bde" onclick="openTab(event, 'tab-bde')">BDE</button>
+    <button class="tab-button" onclick="openTab(event, 'tab-bilan')">Bilan total</button>
+  </div>
+
+  <!-- ===================== ONGLET DECHETS ===================== -->
+  <div id="tab-dechets" class="tab-content tab-dechets">
+    <div class="container">
+      <h1>Calcul des Émissions de CO2 des Déchets</h1>
+
+      <div class="logo-container">
+        <img src="eseo.png" alt="Logo ESEO" class="logo">
+      
+    </div>
+        
+      <div id="form-section-dechets">
+        <form>
+          <!-- DECHETS EMBALLAGES -->
+          <section class="section">
+            <h2>Déchets Emballages</h2>
+            <label for="dechet">Type de Déchet:</label>
+            <select id="dechet">
+              <option value="carton">Cartons</option>
+              <option value="plastique">Plastiques</option>
+              <option value="verre">Verre</option>
+              <option value="bois">Bois</option>
+            </select>
+            <label for="quantite">Quantité (kg):</label>
+            <input type="number" id="quantite" placeholder="Quantité en kg">
+            <button type="button" onclick="ajouterDechet()">Ajouter Déchet</button>
+            <ul id="listeDechets"></ul>
+          </section>
+
+          <!-- DECHETS MENAGERS -->
+          <section class="section">
+            <h2>Déchets Ménagers</h2>
+            <label for="dechetMenager">Type de Déchet:</label>
+            <select id="dechetMenager">
+              <option value="ordures">Ordures Ménagères</option>
+              <option value="dechetsVerts">Déchets Verts</option>
+            </select>
+            <label for="quantiteMenager">Quantité (kg):</label>
+            <input type="number" id="quantiteMenager" placeholder="Quantité en kg">
+            <button type="button" onclick="ajouterDechetMenager()">Ajouter Déchet Ménager</button>
+            <ul id="listeDechetsMenagers"></ul>
+          </section>
+
+          <!-- AUTRES DECHETS -->
+          <section class="section">
+            <h2>Autres Déchets</h2>
+            <label for="dechetAutre">Type de Déchet:</label>
+            <select id="dechetAutre">
+              <option value="deee">Déchets DEEE</option>
+              <option value="piles">Piles</option>
+              <option value="metaux">Métaux Ferreux</option>
+            </select>
+            <label for="quantiteAutre">Quantité (kg):</label>
+            <input type="number" id="quantiteAutre" placeholder="Quantité en kg">
+            <button type="button" onclick="ajouterDechetAutre()">Ajouter Autre Déchet</button>
+            <ul id="listeAutresDechets"></ul>
+          </section>
+
+          <!-- EAUX USEES -->
+          <section class="section">
+            <h2>Eaux Usées</h2>
+            <label for="volumeEaux">Volume d'Eaux Usées (m³):</label>
+            <input type="number" id="volumeEaux" placeholder="Volume en m³">
+          </section>
+
+          <button type="button" onclick="calculerEmissionsDechets()">Calculer</button>
+          <button type="button" class="btn" onclick="resetDechets()">Réinitialiser</button>
+        </form>
+      </div>
+
+      <!-- Section résultat cachée au départ -->
+      <div id="result-section-dechets">
+        <h2>Résultats des Émissions de CO2 (Déchets)</h2>
+        <h2 id="resultatCO2"></h2> 
+        <canvas id="carbonChartDechets" width="400" height="200"></canvas>
+        <button id="back-button-dechets" class="btn" type="button" onclick="goBackDechets()">Revenir au formulaire</button>
+        <button id="excel" class="btn"  type="button" onclick="exportToExcelDechets()">Télécharger le fichier Excel</button>
+      </div>
+    </div>
+  </div>
+
+
+  <!-- ===================== ONGLET ENERGIE ===================== -->
+  <div id="tab-energie" class="tab-content tab-energie " >
+    <div class="container">
+      <h1>Calcul des Émissions de CO2 de l'Énergie</h1>
+
+      <div class="logo-container">
+        <img src="eseo.png" alt="Logo ESEO" class="logo">
+       
+    </div>
+
+      <div id="form-section-energie">
+        <form>
+          <!-- ÉLECTRICITÉ -->
+          <section class="section">
+            <h2>Achat d'électricité</h2>
+            <label for="electricite">Consommation d'électricité (kWh):</label>
+            <input type="number" id="electricite" placeholder=" conso  en kWh">
+          </section>
+
+          <!-- GAZ -->
+          <section class="section">
+            <h2>Achat de Gaz</h2>
+            <label for="gaz">Consommation de Gaz (kWh):</label>
+            <input type="number" id="gaz" placeholder=" conso  en kWh">
+          </section>
+
+          <!-- VAPEUR & FROID -->
+          <section class="section">
+            <h2>Achat de Vapeur et de Froid</h2>
+            <label for="vapeurType">Sélectionner votre réseau de vapeur (si existant):</label>
+            <select id="vapeurType">
+              <option value=""></option>
+              <option value="belley">belley</option>
+              <option value="autre_reseau">Autre Réseau</option>
+            </select>
+
+            <label for="vapeur">Consommation de Vapeur (kWh):</label>
+            <input type="number" id="vapeur" placeholder=" conso en kWh">
+
+            <label for="froidType">Sélectionner votre réseau froid (si existant):</label>
+            <select id="froidType">
+              <option value=""></option>
+              <option value="testfroid">testfroid</option>
+              <option value="autre_froid">Autre Froid</option>
+            </select>
+
+            <label for="froid">Consommation de Froid (kWh):</label>
+            <input type="number" id="froid" placeholder=" conso en kWh">
+          </section>
+
+          <button type="button" onclick="calculerEmissionsEnergie()">Calculer</button>
+          <button type="button" class="btn" onclick="resetEnergie()">Réinitialiser</button>
+        </form>
+      </div>
+
+      <!-- Section résultat cachée au départ -->
+      <div id="result-section-energie">
+        <h2>Résultats des Émissions de CO2 (Énergie)</h2>
+        <div id="result-energie"></div>
+        <canvas id="carbonChartEnergie" width="400" height="200"></canvas>
+        <button id="back-button-energie" class="btn" type="button" onclick="goBackEnergie()">Revenir au formulaire</button>
+        <button id="excelEnergie" class="btn"  type="button" onclick="exportToExcelEnergie()">Télécharger le fichier Excel</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- =====================Onglet BDE==================-->
+  <div id="tab-bde"  class="tab-content tab-bde">
+    <div class="container">
+      <!-- Section Formulaire -->
+      <div id="form-section">
+        <form id="formulaire">
+          <header>
+            <h1>Calcul des Émissions de CO2 d'un Événement BDE</h1>
+          </header>
+  
+          <!-- Informations générales et localisation -->
+          <section id="informations">
+            <div class="logo-container">
+              <img src="eseo.png" alt="Logo ESEO" class="logo">
+            </div>
+            <p>Bienvenue sur l'outil de calcul des émissions GES d'une activité du BDE.</p>
+            <p>Remplissez le formulaire ci-dessous pour obtenir un aperçu de vos émissions.</p>
+          </section>
+  
+          <!-- Localisation de l'événement (détermine l'affichage des déplacements de participants et énergie) -->
+          <section id="event-location">
+            <h2>Localisation de l'événement</h2>
+            <label>Se déroule-t-il hors de l'école ?</label>
+            <select id="event-location-outside" onchange="toggleEnergyAndParticipantSection()">
+              <option value="non">Non</option>
+              <option value="oui">Oui</option>
+            </select>
+          </section>
+  
+          <!-- Informations sur l'événement -->
+          <section id="event-details">
+            <h2>Informations sur l'événement</h2>
+            <label for="event-date">Date de l'événement :</label>
+            <input type="date" id="event-date">
+            
+            <label for="event-description">Description de l'événement :</label>
+            <input type="text" id="event-description">
+            
+            <label for="participants">Nombre de participants :</label>
+            <input type="number" id="participants" min="1" step="1">
+          </section>
+  
+          <!-- Déplacements liés à l'organisation (courses) -->
+          <section id="org-transport">
+            <h2>Déplacements liés à l'organisation de l'événement (courses)</h2>
+            <label for="org-distance">Distance aller-retour (en km) :</label>
+            <input type="number" id="org-distance" min="0" step="0.1">
+            
+            <label for="org-transport-mode">Mode de transport :</label>
+            <select id="org-transport-mode">
+              <option value="voiture">Voiture</option>
+              <option value="velo">Vélo</option>
+              <option value="marche">Marche</option>
+              <option value="tramway">Tramway</option>
+              <option value="bus">Bus</option>
+            </select>
+            <button type="button" onclick="addOrgTransport()">Ajouter</button>
+            <ul id="org-transport-list"></ul>
+          </section>
+  
+          <!-- Déplacements d'invités -->
+          <section id="people-transport">
+            <h2>Déplacements d'invités</h2>
+            <p>Pour chaque trajet, renseignez le mode de transport, puis la distance parcourue et enfin le nombre (de personnes ou de véhicules si c'est une voiture).</p>
+            
+            <label for="people-transport-mode">Mode de transport :</label>
+            <select id="people-transport-mode" onchange="updatePeopleNumberLabel()">
+              <!-- Vous pourrez ajouter d'autres modes ultérieurement -->
+              <option value=""></option>
+              <option value="voiture">Voiture</option>
+              <option value="train">Train</option>
+              <option value="tramway">Tramway</option>
+              <option value="bus">Bus</option>
+              <option value="marche">Marche</option>
+              <option value="velo">Vélo</option>
+            </select>
+            
+            <label for="people-distance">Distance parcourue (en km) :</label>
+            <input type="number" id="people-distance" min="0" step="0.1">
+            
+            <label for="people-number" id="people-number-label">Nombre de personnes :</label>
+            <input type="number" id="people-number" min="1" step="1">
+            
+            <button type="button" onclick="addPeopleTransport()">Ajouter</button>
+            <ul id="people-transport-list"></ul>
+          </section>
+  
+          <!-- Déplacements de participants (affiché uniquement si l'événement est hors de l'école) -->
+          <section id="participant-transport-section" style="display:none;">
+            <h2>Déplacements de participants</h2>
+            <p>Les déplacements des participants se renseignent de la même manière que pour les invités.</p>
+            
+            <label for="participant-transport-mode">Mode de transport :</label>
+            <select id="participant-transport-mode" onchange="updateParticipantNumberLabel()">
+              <option value=""></option>
+              <option value="voiture">Voiture</option>
+              <option value="train">Train</option>
+              <option value="tramway">Tramway</option>
+              <option value="bus">Bus</option>
+              <option value="marche">Marche</option>
+              <option value="velo">Vélo</option>
+            </select>
+            
+            <label for="participant-distance">Distance parcourue (en km) :</label>
+            <input type="number" id="participant-distance" min="0" step="0.1">
+            
+            <label for="participant-number" id="participant-number-label">Nombre de personnes :</label>
+            <input type="number" id="participant-number" min="1" step="1">
+            
+            <button type="button" onclick="addParticipantTransport()">Ajouter</button>
+            <ul id="participant-transport-list"></ul>
+          </section>
+  
+          <!-- Alimentation -->
+          <section id="food">
+            <h2>Alimentation</h2>
+            <p>Veuillez renseigner la quantité d'aliments (en unité).</p>
+            <label for="food-item">Sélectionner un aliment :</label>
+            <select id="food-item">
+              <option value="viennoiserie">Viennoiserie</option>
+              <option value="sandwichpoulet">Sandwich Poulet</option>
+              <option value="sandwichvege">Sandwich Végé</option>
+              <option value="repasviandeblanchepoisson">Repas avec viande blanche ou poisson</option>
+              <option value="pizza4fromages">Pizza 4 fromages</option>
+              <option value="oeufs">Oeufs</option>
+              <option value="madeleines">Madeleines</option>
+              <option value="lasagnes">Lasagne viande</option>
+              <option value="knackis">Knackis</option>
+              <option value="lait">Lait demi-écrémé</option>
+              <option value="glaces">Glaces</option>
+              <option value="concombre">Concombre</option>
+              <option value="baguette">Baguette</option>
+            </select>
+            <label for="food-quantity">Quantité :</label>
+            <input type="number" id="food-quantity" min="0" step="0.1">
+            <button type="button" onclick="addFood()">Ajouter</button>
+            <ul id="food-list"></ul>
+          </section>
+  
+          <!-- Boissons -->
+          <section id="drinks">
+            <h2>Boissons</h2>
+            <p>Renseignez la quantité des boissons en litres.</p>
+            <label for="drink-item">Sélectionner une boisson :</label>
+            <select id="drink-item">
+              <option value="jus">Jus</option>
+              <option value="soda">Soda</option>
+              <option value="vin">Vin</option>
+              <option value="biere">Bière</option>
+              <option value="cafe">Café</option>
+              <option value="eau">Eau en bouteille</option>
+              <option value="alcool">Alcool fort</option>
+            </select>
+            <label for="drink-quantity">Quantité (en L) :</label>
+            <input type="number" id="drink-quantity" min="0" step="0.1">
+            <button type="button" onclick="addDrink()">Ajouter</button>
+            <ul id="drink-list"></ul>
+          </section>
+  
+          <!-- Achats -->
+          <section id="purchases">
+            <h2>Achats de biens et services</h2>
+            <label for="purchase-item">Sélectionner un bien/service :</label>
+            <select id="purchase-item">
+              <option value="console de salon">Console de salon</option>
+              <option value="enceinte musicale">Enceinte musicale</option>
+              <option value="projecteur">Projecteur</option>
+            </select>
+            <label for="purchase-quantity">Quantité :</label>
+            <input type="number" id="purchase-quantity" min="0" step="1">
+            <button type="button" onclick="addPurchase()">Ajouter</button>
+            <ul id="purchase-list"></ul>
+          </section>
+  
+          <!-- Déchets -->
+          <section id="waste">
+            <h2>Déchets</h2>
+            <label for="waste-type">Sélectionner un type de déchet :</label>
+            <select id="waste-type">
+              <option value="canette">Cannette</option>
+              <option value="dechet-menager">Déchets Ménagers</option>
+              <option value="dechet-tries">Déchets Triés</option>
+            </select>
+            <label for="waste-quantity">Quantité (en kg approximatif) :</label>
+            <input type="number" id="waste-quantity" min="0" step="0.1">
+            <button type="button" onclick="addWaste()">Ajouter</button>
+            <ul id="waste-list"></ul>
+          </section>
+  
+          <!-- Consommation d'énergie (affichée si l'événement est hors école) -->
+          <section id="energy" style="display:none;">
+            <h2>Consommation d'énergie</h2>
+            <label for="electricity-consumption">Consommation d'électricité (en kWh) :</label>
+            <input type="number" id="electricity-consumption" min="0" step="0.1">
+            
+            <label for="gas-used">Avez-vous utilisé du gaz pour le chauffage ?</label>
+            <select id="gas-used" onchange="toggleGasQuantity()">
+              <option value="none">Non</option>
+              <option value="natural">Gaz naturel</option>
+              <option value="fuel">Fioul</option>
+            </select>
+            
+            <div id="gas-quantity-container" style="display:none;">
+              <label for="gas-quantity">Quantité de gaz :</label>
+              <input type="number" id="gas-quantity" min="0" step="0.1">
+            </div>
+          </section>
+  
+          <!-- Location de matériel ou service -->
+          <section id="services">
+            <h2>Location de matériel ou service</h2>
+            <p>Pour l'instant, seule l'option <strong>DJ Laba</strong> est proposée.</p>
+            <label for="service-item">Sélectionner un service :</label>
+            <select id="service-item">
+              <option value="dj laba">DJ Laba</option>
+            </select>
+            <label for="service-quantity">Quantité :</label>
+            <input type="number" id="service-quantity" min="0" step="1">
+            <button type="button" onclick="addService()">Ajouter</button>
+            <ul id="service-list"></ul>
+          </section>
+  
+          <section class="form-actions">
+            <button type="button" onclick="calculateCO2()">Calculer les Émissions</button>
+          </section>
+        </form>
+      </div>
+  
+      <!-- Section Résultats -->
+      <div id="result-section">
+        <h1>Résultats</h1>
+        <div id="result"></div>
+        <div class="chart-container">
+           <h2>Répartition graphique des émissions de CO2</h2>
+           <canvas id="co2-pie-chart" width="400" height="400"></canvas>
+        </div>
+        <button class="btn" id="excel" type="button" onclick="exportToExcel()">Télécharger le fichier Excel</button>
+        <button id="back-button" class="btn" type="button" onclick="goBack()">Revenir au formulaire</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- ===================== ONGLET BILAN TOTAL ===================== -->
+  <div id="tab-bilan" class="tab-content">
+    <div class="container">
+      <h1>Bilan Total - Déchets + Énergie</h1>
+
+      <div class="logo-container">
+        <img src="eseo.png" alt="Logo ESEO" class="logo">
+       
+    </div>
+      <div id="result-section-fusion">
+        <p>Déchets : <span id="dechetValue">0</span> kg CO₂e</p>
+        <p>Énergie : <span id="energieValue">0</span> kg CO₂e</p>
+        <p>BDE : <span id="BDEValue">0</span> kg CO₂e</p>
+        <hr>
+        <h2>Bilan Global : <span id="bilanGlobalValue">0</span> kg CO₂e</h2>
+
+         <!-- Camembert global -->
+        <canvas id="carbonChartFusion" width="400" height="200"></canvas>
+
+        <button id="excelFusion" class="btn" type="button" onclick="exportToExcelFusion()">Télécharger le bilan global</button>
+      </div>
+    </div>
+  </div>
+
+
+  
+   
+   <script src="script.js"></script>
+</body>
+</html>
