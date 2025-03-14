@@ -16,6 +16,7 @@
 <body>
   <!-- Barre d'onglets -->
   <div class="tabs">
+    <button class="tab-button" onclick="openTab(event, 'tab-accueil')">Accueil</button>
     <button class="tab-button tab-dechets" onclick="openTab(event, 'tab-dechets')">Déchets</button>
     <button class="tab-button tab-energie " onclick="openTab(event, 'tab-energie')">Énergie</button>
     <button class="tab-button tab-bde" onclick="openTab(event, 'tab-bde')">BDE</button>
@@ -449,6 +450,22 @@
 
         <button id="excelFusion" class="btn" type="button" onclick="exportToExcelFusion()">Télécharger le bilan global</button>
       </div>
+    </div>
+  </div>
+
+  <!-- ===================== ONGLET Accueil ===================== -->
+  <div id="tab-accueil" class="tab-content">
+    <div class="container">
+      <h1>Bienvenue sur l'outil Bilan GES</h1>
+
+      <div class="logo-container">
+        <img src="eseo.png" alt="Logo ESEO" class="logo">
+       
+    </div>
+     <p> Chaque onglet correspond à un outil distinct de calcul de bilan ges bien ciblé. </p>
+     <p> Vous pouvez choisir d'effectuer un bilan soit ciblé pour un outil bien spécifique et exporter les résultats ou sinon effectuer un bilan global de votre choix et 
+      observer les résultats sur l'onglet bilan total (où vous pourrez exporter les résultats) </p>
+      <h4> On va pouvoir faire de grandes choses </h4>
     </div>
   </div>
 
