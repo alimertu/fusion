@@ -46,7 +46,7 @@
     }
 
     // Ouvrir le dernier onglet bilan total par défaut
-    document.querySelectorAll(".tab-button")[3].click();
+    document.querySelectorAll(".tab-button")[0].click();
 
 
   
