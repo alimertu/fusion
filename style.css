@@ -8,6 +8,17 @@ body {
     background-size: cover;
     
   }
+
+ /* Cette règle s'applique uniquement aux <section> qui sont des descendants de l'élément #tab-bde */
+#tab-bde section:not(:last-child)::after {
+  content: "";
+  display: block;
+  height: 1px;
+  background: #ddd;  /* Couleur du séparateur */
+  margin: 20px 0;     /* Espace avant et après le trait */
+}
+
+  
   .tabs {
     display: flex;
     background: #2980b9;
@@ -104,6 +115,12 @@ body {
     text-align: center;
     margin-bottom: 20px;
     color: #2c3e50;
+  }
+
+  h2{
+    text-align: center;
+    text-shadow: #007BFF;
+   
   }
   .section {
     background: #f9f9f9;
