@@ -662,7 +662,11 @@ function updateServiceList() {
 }
 function calculateServiceCO2() {
     const serviceEmissionFactors = {
-        'dj laba': 100  // Valeur d'exemple
+        'hebergement': 0.32, // outil BNEI
+        'activité':0.27, //outil BNEI
+        'cadeau':0.422,
+        'animation':0.12, //outil ges 1.5
+        'location':0.28 //outil ges 1.5
     };
     let total = 0;
     services.forEach(service => {
@@ -745,10 +749,14 @@ function calculateDrinkCO2() {
     return total;
 }
 function calculateWasteCO2() {
+  //--------------FE venant du tableur BILAN GES--------
     const wasteEmissionsPerKg = {
-        'canette': 0.15,
-        'dechet-menager': 0.386,
-        'dechet-tries': 0.986
+        'plastique': 0.122, //plastique bio-sourcé PE
+        'dechet-menager': 0.386, //ordures ménagers résiduelles
+        'metaux': 0.938, //metaux Ferreurx 
+        'verre':0.496, // verre fin de vie moyenne
+        'bio-déchets':0.02,//dechets vert compostage domestique en tas
+        'papiers-cartons':0.737 //carton fin de vie moyenne
     };
     let total = 0;
     wastes.forEach(waste => {
@@ -759,9 +767,19 @@ function calculateWasteCO2() {
 }
 function calculatePurchaseCO2() {
     const purchaseEmissionsPerUnit = {
-        'console de salon': 5,
-        'enceinte musicale': 2,
-        'projecteur': 3
+        'console de salon': 73.7,
+        'enceinte musicale': 8.98,
+        'projecteur': 145,
+        'photo':24.4,
+        'raclette':16.8,
+        'machinecafe':47.6,
+        'four':82.7,
+        'gobelet':0.008,
+        'ski':15,
+        'meuble':907,
+        'ballon':0.0065,
+        'cables':0.38
+        
     };
     let total = 0;
     purchases.forEach(purchase => {
@@ -880,6 +898,8 @@ function calculateCO2() {
                 gasCO2 = gasQuantity * 0.24;
             } else if (gasUsed === "fuel") {
                 gasCO2 = gasQuantity * 0.3243;
+            } else if(gasUsed=== "chauffage"){
+              gasCO2 = gasQuantity * 0.038;
             }
         }
         co2ParticipantTransport = calculateParticipantTransportCO2();
