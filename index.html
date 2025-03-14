@@ -246,7 +246,7 @@
               <option value="velo">Vélo</option>
             </select>
             
-            <label for="people-distance">Distance parcourue (en km) :</label>
+            <label for="people-distance">Distance aller-retour parcourue (en km) :</label>
             <input type="number" id="people-distance" min="0" step="0.1">
             
             <label for="people-number" id="people-number-label">Nombre de personnes :</label>
@@ -272,7 +272,7 @@
               <option value="velo">Vélo</option>
             </select>
             
-            <label for="participant-distance">Distance parcourue (en km) :</label>
+            <label for="participant-distance">Distance aller-retour parcourue (en km) :</label>
             <input type="number" id="participant-distance" min="0" step="0.1">
             
             <label for="participant-number" id="participant-number-label">Nombre de personnes :</label>
@@ -334,8 +334,17 @@
             <label for="purchase-item">Sélectionner un bien/service :</label>
             <select id="purchase-item">
               <option value="console de salon">Console de salon</option>
-              <option value="enceinte musicale">Enceinte musicale</option>
+              <option value="enceinte musicale">Enceinte bluetooth</option>
+              <option value="photo">Appareil photo</option>
+              <option value="raclette">Appareil à raclette</option>
+              <option value="machinecafe">Machine à café</option>
+              <option value="four">Mini-four</option>
               <option value="projecteur">Projecteur</option>
+              <option value="gobelet">Gobelets en plastiques</option>
+              <option value="ski">Paire de Ski</option>
+              <option value="meuble">Meuble de rangement</option>
+              <option value="ballon">Ballon de Baudruche</option>
+              <option value="cables">Câbles électriques externe (à reinseigner en m)</option>
             </select>
             <label for="purchase-quantity">Quantité :</label>
             <input type="number" id="purchase-quantity" min="0" step="1">
@@ -348,9 +357,12 @@
             <h2>Déchets</h2>
             <label for="waste-type">Sélectionner un type de déchet :</label>
             <select id="waste-type">
-              <option value="canette">Cannette</option>
+              <option value="plastique">Plastiques</option>
               <option value="dechet-menager">Déchets Ménagers</option>
-              <option value="dechet-tries">Déchets Triés</option>
+              <option value="metaux">Métaux</option>
+              <option value="bio-déchets">Bio-déchets</option>
+              <option value="papiers-cartons">Papiers & Cartons</option>
+              <option value="verre">Verres</option>
             </select>
             <label for="waste-quantity">Quantité (en kg approximatif) :</label>
             <input type="number" id="waste-quantity" min="0" step="0.1">
@@ -364,11 +376,13 @@
             <label for="electricity-consumption">Consommation d'électricité (en kWh) :</label>
             <input type="number" id="electricity-consumption" min="0" step="0.1">
             
-            <label for="gas-used">Avez-vous utilisé du gaz pour le chauffage ?</label>
+            <label for="gas-used">Est-ce que le chauffage est inclus dans l'électricité ?</label>
             <select id="gas-used" onchange="toggleGasQuantity()">
-              <option value="none">Non</option>
+              <option value=""></option>
+              <option value="none">Oui</option>
               <option value="natural">Gaz naturel</option>
               <option value="fuel">Fioul</option>
+              <option value="chauffage">chauffage Urbain(Angers)</option>
             </select>
             
             <div id="gas-quantity-container" style="display:none;">
@@ -379,13 +393,16 @@
   
           <!-- Location de matériel ou service -->
           <section id="services">
-            <h2>Location de matériel ou service</h2>
-            <p>Pour l'instant, seule l'option <strong>DJ Laba</strong> est proposée.</p>
+            <h2>Location de matériels ou services</h2>
             <label for="service-item">Sélectionner un service :</label>
             <select id="service-item">
-              <option value="dj laba">DJ Laba</option>
+              <option value="hebergement">Hébergement</option>
+              <option value="activité">Activité sportives, récréatives ou de loisirs</option>
+              <option value="cadeau">Carte-cadeau</option>
+              <option value="animation">Service d'animation culturel</option>
+              <option value="location">Location de voiture</option>
             </select>
-            <label for="service-quantity">Quantité :</label>
+            <label for="service-quantity">Somme dépensée :</label>
             <input type="number" id="service-quantity" min="0" step="1">
             <button type="button" onclick="addService()">Ajouter</button>
             <ul id="service-list"></ul>
@@ -402,7 +419,7 @@
         <h1>Résultats</h1>
         <div id="result"></div>
         <div class="chart-container">
-           <h2>Répartition graphique des émissions de CO2</h2>
+           <h1>Répartition graphique des émissions de CO2</h1>
            <canvas id="co2-pie-chart" width="400" height="400"></canvas>
         </div>
         <button class="btn" id="excel" type="button" onclick="exportToExcel()">Télécharger le fichier Excel</button>
